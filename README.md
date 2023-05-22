@@ -1,0 +1,7 @@
+# REINFORCEMENT LEARNING : MAZE PROBLEM
+
+
+### EXECUTION 
+`
+ python train.py
+`
