@@ -6,7 +6,7 @@ from protocol import *
 import config
 import utils
 
-def train(environment, EPISODES=100, binary_path = 'models/model3.dump'):
+def train(environment, EPISODES=300, binary_path = 'models/model3.dump'):
 	environment.reset()
 	values = {}
 	rewards_list = []
@@ -16,18 +16,21 @@ def train(environment, EPISODES=100, binary_path = 'models/model3.dump'):
 	first_path = []
 	for episoden in range(EPISODES):
 		environment.reset()
-		position, goal_position = [0, 0], [3, 3]
+		position, goal_position = config.PLAYER_INITIAL_POSITION, config.GOAL_POSITION
 
-		start_position = position
 		environment.player_position = np.asarray(position)
 		environment.target_position = np.asarray(goal_position)
 		current_state = environment.compressed_state_rep()
 		use_epsilon = 0.1
 		if episoden > 200:
 			use_epsilon = 0.0
-		action, action_v = policy(values, current_state, epsilon = use_epsilon)
+
+		action, action_v = policy(
+			values, current_state, epsilon = use_epsilon
+			)
+		
 		total_reward = 0
-		#step = 0
+		
 		deltas = []
 
 		while (not environment.over):
@@ -48,7 +51,7 @@ def train(environment, EPISODES=100, binary_path = 'models/model3.dump'):
 
 			if environment.over: #one can only win.
 				next_action_v = 100
-				total_reward+=100
+				total_reward += 100
 
 			delta = next_action_v * config.GAMMA + reward - action_v
 			deltas.append(delta)
@@ -70,7 +73,7 @@ def train(environment, EPISODES=100, binary_path = 'models/model3.dump'):
 	position, goal_position = [0, 0], config.GOAL_POSITION
 
 	start_position = position
-	environment.position = np.asarray(position)
+	environment.player_position = np.asarray(position)
 	environment.target_position = np.asarray(goal_position)
 	boards = environment.sequences(last_path)
 	frames = [Image.fromarray(frame, 'RGB') for frame in boards]
@@ -79,7 +82,12 @@ def train(environment, EPISODES=100, binary_path = 'models/model3.dump'):
 	utils.make_gif(frames, path)
 	
 if __name__ == "__main__":
+
 	blocked_squares = [[i, i-1] for i in range(1,3)]
-	environment = Generate_maze(maze_dimensions = [MAZE_SIZE, MAZE_SIZE], 
-	                    obstacle_positions = blocked_squares)
+
+	environment = Generate_maze(
+		maze_dimensions = [MAZE_SIZE, MAZE_SIZE], 
+	    obstacle_positions = blocked_squares
+		)
+	
 	train(environment)

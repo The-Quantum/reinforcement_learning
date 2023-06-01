@@ -72,11 +72,11 @@ class Generate_maze():
         return maze_feature_color * self.maze_color_mask
     
     def make_maze_img(self, fog = True):
-        IMG_SCALE_FACTOR = 14
+        IMG_SCALE_FACTOR = 20
         environment = self.color_maze() if fog else self.environment_color_map()
-        #environment = environment.repeat(
-        #    IMG_SCALE_FACTOR, axis=0).repeat(IMG_SCALE_FACTOR, axis=1)
-        # 
+        environment = environment.repeat(
+            IMG_SCALE_FACTOR, axis=0).repeat(IMG_SCALE_FACTOR, axis=1)
+         
         return environment
 
     def sequences(self, steps):
