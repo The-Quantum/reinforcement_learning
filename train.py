@@ -1,12 +1,13 @@
 import numpy as np
 from PIL import Image
 
-from make_maze import Generate_maze
+from generate_maze import Generate_maze
 from protocol import *
 import config
+import utils
 
-def train(env, EPISODES=100, save_to = 'models/model3.dump'):
-	env.reset()
+def train(environment, EPISODES=100, binary_path = 'models/model3.dump'):
+	environment.reset()
 	values = {}
 	rewards_list = []
 	steps_list = []
@@ -14,13 +15,13 @@ def train(env, EPISODES=100, save_to = 'models/model3.dump'):
 	last_path = []
 	first_path = []
 	for episoden in range(EPISODES):
-		env.reset()
+		environment.reset()
 		position, goal_position = [0, 0], [3, 3]
 
 		start_position = position
-		env.position = np.asarray(position)
-		env.target_position = np.asarray(goal_position)
-		current_state = env.compressed_state_rep()
+		environment.player_position = np.asarray(position)
+		environment.target_position = np.asarray(goal_position)
+		current_state = environment.compressed_state_rep()
 		use_epsilon = 0.1
 		if episoden > 200:
 			use_epsilon = 0.0
@@ -29,7 +30,7 @@ def train(env, EPISODES=100, save_to = 'models/model3.dump'):
 		#step = 0
 		deltas = []
 
-		while (not env.over):
+		while (not environment.over):
 			if episoden == 299:
 				print(f'state: \n{current_state}')
 				print(f'action chosen: {(action, action_v)}')
@@ -37,16 +38,15 @@ def train(env, EPISODES=100, save_to = 'models/model3.dump'):
 			if episoden == 0:
 				first_path.append(action)
 				
-
 			step +=1
-			reward = env.move(action)
+			reward = environment.move(action)
 			total_reward += reward
-			next_state = env.compressed_state_rep()
+			next_state = environment.compressed_state_rep()
 
 			next_action, next_action_v = policy(values, next_state, epsilon = use_epsilon)
 			
 
-			if env.over: #one can only win.
+			if environment.over: #one can only win.
 				next_action_v = 100
 				total_reward+=100
 
@@ -66,17 +66,20 @@ def train(env, EPISODES=100, save_to = 'models/model3.dump'):
 		output = str(steps_list)+'\n'+str(values)
 		f.write(output)
 
-	env.reset()
+	environment.reset()
 	position, goal_position = [0, 0], config.GOAL_POSITION
+
 	start_position = position
-	env.position = np.asarray(position)
-	env.target_position = np.asarray(goal_position)
-	boards = env.sequences(last_path)
+	environment.position = np.asarray(position)
+	environment.target_position = np.asarray(goal_position)
+	boards = environment.sequences(last_path)
 	frames = [Image.fromarray(frame, 'RGB') for frame in boards]
-	path = 'media/last_iter_5.gif'
+
+	path = 'output/Output.gif'
+	utils.make_gif(frames, path)
 	
 if __name__ == "__main__":
 	blocked_squares = [[i, i-1] for i in range(1,3)]
 	environment = Generate_maze(maze_dimensions = [MAZE_SIZE, MAZE_SIZE], 
 	                    obstacle_positions = blocked_squares)
-	train(env)
+	train(environment)

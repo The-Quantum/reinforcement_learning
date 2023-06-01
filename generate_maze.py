@@ -2,7 +2,7 @@ import numpy as np
 
 from utils import *
 from config import (PLAYER_COLOR, TARGET_COLOR, TREASURE_COLOR, 
-                    UNKNOWN_COLOR, OBSTACLE_COLOR, 
+                    UNKNOWN_COLOR, OBSTACLE_COLOR, POSSIBLE_ACTIONS,
                     FREE_CELL_COLOR)
 
 class Generate_maze():
@@ -12,6 +12,7 @@ class Generate_maze():
                 target_position = np.asarray([3,3]),
                 treasure_position=np.asarray([2,2]), 
                 obstacle_positions = []):
+        
         self.maze_dimensions = maze_dimensions
         self.player_position = player_position
         self.target_position = target_position
