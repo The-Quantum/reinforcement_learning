@@ -17,7 +17,7 @@ MAZE_SIZE = 4
 GAMMA = 0.9
 alpha = 0.5
 PLAYER_INITIAL_POSITION = [0, 0]
-GOAL_POSITION = [2, 0]
+GOAL_POSITION = [3, 3]
 
 state = 1
 ALL_POSITIONS = {}
@@ -25,7 +25,6 @@ for x in range(MAZE_SIZE):
   for y in range(MAZE_SIZE):
       ALL_POSITIONS[state] = [x, y]
       state += 1
-      
-if __name__ == "__main__":
-   print(ALL_POSITIONS)
+
+BLOCKED_SQUARES = [[i, i-1] for i in range(1,3)]
 

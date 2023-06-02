@@ -2,8 +2,7 @@ import numpy as np
 
 from utils import *
 from config import (PLAYER_COLOR, TARGET_COLOR, TREASURE_COLOR, 
-                    UNKNOWN_COLOR, OBSTACLE_COLOR, POSSIBLE_ACTIONS,
-                    FREE_CELL_COLOR)
+                    OBSTACLE_COLOR, POSSIBLE_ACTIONS)
 
 class Generate_maze():
     def __init__(self, 
@@ -149,10 +148,3 @@ class Generate_maze():
             for w in range(j-1, j+2):
                 if self.bound_check([h,w]):
                     self.maze_color_mask[h][w] = [1,1,1]
-
-        
-if __name__ == "__main__":
-    maze = Generate_maze()
-    env = maze.make_maze_img()
-    print(env)
-    print(env[:,:,0])

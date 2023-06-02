@@ -6,7 +6,7 @@ from protocol import *
 import config
 import utils
 
-def train(environment, EPISODES=300, binary_path = 'models/model3.dump'):
+def train(environment, EPISODES=300):
 	environment.reset()
 	values = {}
 	rewards_list = []
@@ -14,6 +14,7 @@ def train(environment, EPISODES=300, binary_path = 'models/model3.dump'):
 	step = 0
 	last_path = []
 	first_path = []
+
 	for episoden in range(EPISODES):
 		environment.reset()
 		position, goal_position = config.PLAYER_INITIAL_POSITION, config.GOAL_POSITION
@@ -22,6 +23,7 @@ def train(environment, EPISODES=300, binary_path = 'models/model3.dump'):
 		environment.target_position = np.asarray(goal_position)
 		current_state = environment.compressed_state_rep()
 		use_epsilon = 0.1
+		
 		if episoden > 200:
 			use_epsilon = 0.0
 
@@ -47,9 +49,8 @@ def train(environment, EPISODES=300, binary_path = 'models/model3.dump'):
 			next_state = environment.compressed_state_rep()
 
 			next_action, next_action_v = policy(values, next_state, epsilon = use_epsilon)
-			
 
-			if environment.over: #one can only win.
+			if environment.over: 
 				next_action_v = 100
 				total_reward += 100
 
@@ -61,18 +62,16 @@ def train(environment, EPISODES=300, binary_path = 'models/model3.dump'):
 			action = next_action
 			action_v = next_action_v
 
-
 		rewards_list.append(total_reward)
 		steps_list.append(step)
 
-	with open('steps.txt', 'w') as f:
+	with open('output/steps.txt', 'w') as f:
 		output = str(steps_list)+'\n'+str(values)
 		f.write(output)
 
 	environment.reset()
 	position, goal_position = [0, 0], config.GOAL_POSITION
 
-	start_position = position
 	environment.player_position = np.asarray(position)
 	environment.target_position = np.asarray(goal_position)
 	boards = environment.sequences(last_path)
@@ -83,11 +82,10 @@ def train(environment, EPISODES=300, binary_path = 'models/model3.dump'):
 	
 if __name__ == "__main__":
 
-	blocked_squares = [[i, i-1] for i in range(1,3)]
-
+    # instantiate the environment
 	environment = Generate_maze(
 		maze_dimensions = [MAZE_SIZE, MAZE_SIZE], 
-	    obstacle_positions = blocked_squares
+	    obstacle_positions = config.BLOCKED_SQUARES
 		)
 	
 	train(environment)
