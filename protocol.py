@@ -1,7 +1,7 @@
 import random
 import numpy as np
 
-from config import (PLAYER_COLOR, TARGET_COLOR, TREASURE_COLOR, MAZE_SIZE,
+from config import (PLAYER_COLOR, TARGET_COLOR, TREASURE_COLOR, MAZE_SIZE, GOAL_POSITION,
                     UNKNOWN_COLOR, OBSTACLE_COLOR, FREE_CELL_COLOR, POSSIBLE_ACTIONS) 
 
  
@@ -67,7 +67,7 @@ def state_values(values, mock_env, GOAL_POSITION):
 
 	for i in range(MAZE_SIZE):
 		for j in range(MAZE_SIZE):
-			#mock_env = Maze.Maze(dimensions = [MAZE_SIZE, MAZE_SIZE])
+			
 			mock_env.position = np.asarray([i,j])
 			mock_env.target_position = np.asarray(GOAL_POSITION)
 			
@@ -87,7 +87,7 @@ def state_values(values, mock_env, GOAL_POSITION):
 
 def unique_starts(i):
 	position = [0, 0]
-	goal_position = GOAL
+	goal_position = GOAL_POSITION
 	'''
 	if i%2 == 0:
 		position[0] = abs(MAZE_SIZE - position[0]) -1
